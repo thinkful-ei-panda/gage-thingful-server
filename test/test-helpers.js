@@ -133,6 +133,10 @@ function makeReviewsArray(users, things) {
   ];
 }
 
+const makeAuthHeader = user => {
+  const token = Buffer.from(`${user.user_name}:${user.password}`).toString('base64')
+}
+
 function makeExpectedThing(users, thing, reviews=[]) {
   const user = users
     .find(user => user.id === thing.user_id)
@@ -262,7 +266,7 @@ module.exports = {
   makeExpectedThingReviews,
   makeMaliciousThing,
   makeReviewsArray,
-
+  makeAuthHeader,
   makeThingsFixtures,
   cleanTables,
   seedThingsTables,
