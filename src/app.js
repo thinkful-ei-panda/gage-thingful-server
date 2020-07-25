@@ -15,14 +15,21 @@ app.use(morgan((NODE_ENV === 'production') ? 'tiny' : 'common', {
 app.use(cors());
 app.use(helmet());
 
+app.use((req,res,next)=>{
+  // console.log(req);
+  next();
+});
+
 app.use('/api/things', thingsRouter);
 app.use('/api/reviews', reviewsRouter);
 
+// eslint-disable-next-line no-unused-vars
 app.use(function errorHandler(error, req, res, next) {
   let response;
   if (NODE_ENV === 'production') {
     response = { error: 'Server error' };
   } else {
+    // eslint-disable-next-line no-console
     console.error(error);
     response = { error: error.message, object: error };
   }

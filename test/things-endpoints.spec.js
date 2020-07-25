@@ -119,40 +119,36 @@ describe('Things Endpoints', function() {
     }
   ];
   protectedEndpoints.forEach(endpoint => {
-
-    describe(endpoint.name, () => {
+    describe.only(endpoint.name, () => {
 
       context('Given no things', () => {
       
         beforeEach(()=>{
           db.into('thingful_users').insert(testUsers);
         });
-
-        it('responds with 404', () => {
-          const thingId = 123456;
+        it('responds with 401 "missing basic token" when nothing is given', ()=>{
           return supertest(app)
-            .get(`/api/things/${thingId}`)
-            .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
-            .expect(404, { error: 'Thing doesn\'t exist' });
+            .get(endpoint.path)
+            .expect(401, {error : 'Missing basic token'});
         });
         it('responds with 401 "Unauthorized request" when no credentials in token', ()=>{
           const userNoCred = {user_name : '', password: 'the man who knows this oz of words, has a ton to tell, but must remain unspoken '};
           return supertest(app)
-            .get('/api/things/1')
+            .get(endpoint.path)
             .set('Authorization', helpers.makeAuthHeader(userNoCred))
             .expect(401, {error : 'Unauthorized request'});
         });
         it('responds with 401 "Unauthorized request" when invalid user', () => {
           const userInvalidUser = {user_name : '6gf6d5g41hd' , password : 'w3e5r1gs'};
           return supertest(app)
-            .get('/api/things/1')
+            .get(endpoint.path)
             .set('Authorization', helpers.makeAuthHeader(userInvalidUser))
             .expect(401,{error : 'Unauthorized request'});
         });
         it('responds with 401 "Unauthorized request" when invalid password  ');
         const userInvalidPassword = {user_name : testUsers[0].user_name , password : 'g0hj6l8g4'};
         return supertest(app)
-          .get('/api/things/1')
+          .get(endpoint.path)
           .set('Authorization', helpers.makeAuthHeader(userInvalidPassword))
           .expect(401,{error : 'Unauthorized request'});
       });

@@ -135,6 +135,7 @@ function makeReviewsArray(users, things) {
 
 const makeAuthHeader = user => {
   const token = Buffer.from(`${user.user_name}:${user.password}`).toString('base64')
+  return `Basic ${token}`;
 }
 
 function makeExpectedThing(users, thing, reviews=[]) {

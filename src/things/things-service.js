@@ -1,5 +1,5 @@
-const xss = require('xss')
-const Treeize = require('treeize')
+const xss = require('xss');
+const Treeize = require('treeize');
 
 const ThingsService = {
   getAllThings(db) {
@@ -13,29 +13,29 @@ const ThingsService = {
         'thg.image',
         ...userFields,
         db.raw(
-          `count(DISTINCT rev) AS number_of_reviews`
+          'count(DISTINCT rev) AS number_of_reviews'
         ),
         db.raw(
-          `AVG(rev.rating) AS average_review_rating`
-        ),
+          'AVG(rev.rating) AS average_review_rating'
+        )
       )
       .leftJoin(
         'thingful_reviews AS rev',
         'thg.id',
-        'rev.thing_id',
+        'rev.thing_id'
       )
       .leftJoin(
         'thingful_users AS usr',
         'thg.user_id',
-        'usr.id',
+        'usr.id'
       )
-      .groupBy('thg.id', 'usr.id')
+      .groupBy('thg.id', 'usr.id');
   },
 
   getById(db, id) {
     return ThingsService.getAllThings(db)
       .where('thg.id', id)
-      .first()
+      .first();
   },
 
   getReviewsForThing(db, thing_id) {
@@ -46,28 +46,28 @@ const ThingsService = {
         'rev.rating',
         'rev.text',
         'rev.date_created',
-        ...userFields,
+        ...userFields
       )
       .where('rev.thing_id', thing_id)
       .leftJoin(
         'thingful_users AS usr',
         'rev.user_id',
-        'usr.id',
+        'usr.id'
       )
-      .groupBy('rev.id', 'usr.id')
+      .groupBy('rev.id', 'usr.id');
   },
 
   serializeThings(things) {
-    return things.map(this.serializeThing)
+    return things.map(this.serializeThing);
   },
 
   serializeThing(thing) {
-    const thingTree = new Treeize()
+    const thingTree = new Treeize();
 
     // Some light hackiness to allow for the fact that `treeize`
     // only accepts arrays of objects, and we want to use a single
     // object.
-    const thingData = thingTree.grow([ thing ]).getData()[0]
+    const thingData = thingTree.grow([ thing ]).getData()[0];
 
     return {
       id: thingData.id,
@@ -78,20 +78,20 @@ const ThingsService = {
       user: thingData.user || {},
       number_of_reviews: Number(thingData.number_of_reviews) || 0,
       average_review_rating: Math.round(thingData.average_review_rating) || 0,
-    }
+    };
   },
 
   serializeThingReviews(reviews) {
-    return reviews.map(this.serializeThingReview)
+    return reviews.map(this.serializeThingReview);
   },
 
   serializeThingReview(review) {
-    const reviewTree = new Treeize()
+    const reviewTree = new Treeize();
 
     // Some light hackiness to allow for the fact that `treeize`
     // only accepts arrays of objects, and we want to use a single
     // object.
-    const reviewData = reviewTree.grow([ review ]).getData()[0]
+    const reviewData = reviewTree.grow([ review ]).getData()[0];
 
     return {
       id: reviewData.id,
@@ -100,9 +100,9 @@ const ThingsService = {
       text: xss(reviewData.text),
       user: reviewData.user || {},
       date_created: reviewData.date_created,
-    }
+    };
   },
-}
+};
 
 const userFields = [
   'usr.id AS user:id',
@@ -111,6 +111,6 @@ const userFields = [
   'usr.nickname AS user:nickname',
   'usr.date_created AS user:date_created',
   'usr.date_modified AS user:date_modified',
-]
+];
 
-module.exports = ThingsService
+module.exports = ThingsService;
