@@ -15,11 +15,6 @@ app.use(morgan((NODE_ENV === 'production') ? 'tiny' : 'common', {
 app.use(cors());
 app.use(helmet());
 
-app.use((req,res,next)=>{
-  // console.log(req);
-  next();
-});
-
 app.use('/api/things', thingsRouter);
 app.use('/api/reviews', reviewsRouter);
 

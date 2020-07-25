@@ -119,7 +119,7 @@ describe('Things Endpoints', function() {
     }
   ];
   protectedEndpoints.forEach(endpoint => {
-    describe.only(endpoint.name, () => {
+    describe(endpoint.name, () => {
 
       context('Given no things', () => {
       
