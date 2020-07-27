@@ -124,7 +124,7 @@ describe('Things Endpoints', function() {
       context('Given no things', () => {
       
         beforeEach(()=>{
-          db.into('thingful_users').insert(testUsers);
+          helpers.seedUsers(db, testUsers);
         });
         it('responds with 401 "missing basic token" when nothing is given', ()=>{
           return supertest(app)
