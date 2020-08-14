@@ -36,10 +36,10 @@ describe('Things Endpoints', function() {
       )
     );
     describe('GET /api/things/:things_id',()=>{
-      it('responds with 401 \'Missing basic token\' when no basic token', () => {
+      it('responds with 401 \'Missing bearer token\' when no bearer token', () => {
         return supertest(app)
           .get('/api/things/1')
-          .expect(401, {error : 'Missing basic token'});
+          .expect(401, {error : 'Missing bearer token'});
       } );
 
     });
@@ -123,13 +123,18 @@ describe('Things Endpoints', function() {
 
       context('Given no things', () => {
       
-        beforeEach(()=>{
-          helpers.seedUsers(db, testUsers);
+        // beforeEach(()=>{
+        //   return helpers.seedUsers(db, testUsers);
+        // });
+        
+        beforeEach(() => {
+          return helpers.seedThingsTables(db,testUsers,testThings, testReviews);
         });
-        it('responds with 401 "missing basic token" when nothing is given', ()=>{
+
+        it('responds with 401 "missing bearer token" when nothing is given', ()=>{
           return supertest(app)
             .get(endpoint.path)
-            .expect(401, {error : 'Missing basic token'});
+            .expect(401, {error : 'Missing bearer token'});
         });
         it('responds with 401 "Unauthorized request" when no credentials in token', ()=>{
           const userNoCred = {user_name : '', password: 'the man who knows this oz of words, has a ton to tell, but must remain unspoken '};
